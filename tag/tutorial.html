@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<title>whirlyNerd | Blog &mdash; Articles tagged tutorial</title>
+		<meta charset="utf-8" />
+		<link rel="profile" href="http://gmpg.org/xfn/11" />
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.css" />
+		<link rel='stylesheet' id='oswald-css'  href='http://fonts.googleapis.com/css?family=Oswald&#038;ver=3.3.2' type='text/css' media='all' />
+		<style type="text/css">
+			body.custom-background { background-color: #f5f5f5; }
+		</style>
+		<link rel="alternate" type="application/atom+xml"
+			title="whirlyNerd | Blog — Flux Atom"
+			href="/" /> 
+		<!--[if lte IE 8]><script src="/theme/js/html5shiv.js"></script><![endif]-->
+</head>
+
+<body class="home blog custom-background " >
+	<div id="container">
+		<div id="header">
+				<h1 id="site-title"><a href="">whirlyNerd | Blog</a></h1>
+		</div><!-- /#banner -->
+		
+		<div id="menu">
+			<div class="menu-navigation-container">
+				<ul id="menu-navigation" class="menu">
+						<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/category/tutorial.html">Tutorial</a></li>
+						<li  class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="http://getpelican.com/">Pelican</a></li>
+						<li  class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="http://python.org/">Python.org</a></li>
+						<li  class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+						<li  class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="#">You can modify those links in your config file</a></li>
+
+				</ul>
+			</div> <!--/#menu-navigation-container-->
+		</div><!-- /#menu -->
+		
+		<div class="page-title">
+<div class="page-title">
+	<h2>Tagged with <span>tutorial</span> &hellip;</h2>
+</div>
+		</div>
+	
+		<div id="contents">
+<div class="post type-post status-publish format-standard hentry category-general" id="post">
+	<div class="entry-meta">
+		<div class="date"><a href="/how-to-use-bootcamp-on-usb-stick.html">Wed 22 June 2016</a></div>
+		<span class="byline">By <a href="/author/josh-clements.html">Josh Clements</a></span>
+			<span class="cat-links"><a href="/category/tutorial.html" title="View all posts in Tutorial" rel="category tag">Tutorial</a></span>
+	</div> <!-- /#entry-meta -->
+	<div class="main">
+		<h2 class="entry-title">
+			<a href="/how-to-use-bootcamp-on-usb-stick.html" title="Permalink to How to use macOS Boot Camp on a USB stick" rel="bookmark">How to use macOS Boot Camp on a USB stick</a>
+		</h2>
+		<div class="entry-content">
+			<p>My equipment:<br>
+<ol>
+  <li>13" MacBook Pro, Early-2015.</li>
+  <li> Windows 10 EDU in VMWare Fusion 8.</li>
+  <li>128GB SanDisk UltraFit USB 3.0 (ultimate destination for Boot Camp).</li>
+  <li>Seagate 750GB SSD/HDD Hybrid in a USB enclosure.</li>
+</ol></p>
+<p>What you'll need:<br>
+<ol>
+  <li>Windows ISO (I'm using Windows 10, but should also work with 7, 8, or 8.1). You can also use a Windows installation disc.</li>
+  <li><a href="https://www.autoitscript.com/site/autoit-tools/gimagex/">gimagex</a>.</li>
+  <li>Existing Windows 7, 8, 8.1, or 10 64-bit installation, physical or virtual machine.</li>
+  <li>A USB hard drive and a USB stick (yes, both).</li>
+  <li>Your Mac, of course.</li>
+</ol></p>
+<p>Summary of steps:<br>
+<ol>
+  <li>Partition the USB hard drive.</li>
+  <li>Write the <code>install.wim</code> image to the USB hard drive.</li>
+  <li>Make the USB hard drive bootable.</li>
+  <li>Clone the USB hard drive contents to the USB stick using <code>dd</code>.</li>
+</ol></p>
+<h3>Partition the USB hard drive</h3>
+<ul>
+<li>Insert the USB hard drive into the Windows machine and launch <code>Command Prompt (Admin)</code>.   </li>
+<li>Type <code>diskpart</code> to launch the DISKPART utility.  </li>
+<li>Type <code>list disk</code> to see the list of attached disks. Note the disk number associated with your USB hard drive. I'll refer to it as X.  </li>
+<li>Type <code>select disk X</code>, then type <code>list disk</code> and confirm an asterisk next to the proper disk.  </li>
+<li><strong>WARNING</strong> The following step will wipe all data from the USB hard drive.  </li>
+<li>Type <code>clean</code>.  </li>
+<li>Type <code>convert mbr</code> to create a Master Boot Record (MBR) partiton table. I did not get a GPT disk to work with the USB stick.  </li>
+<li>To create a 200MB EFI partition, type <code>make partition primary size=200</code>.  </li>
+<li>Format the EFI partition by typing <code>format fs=FAT32 label=EFI quick</code>.  </li>
+<li>Assign the partition a drive letter: <code>assign</code>.  </li>
+<li>Make the partition bootable by typing <code>active</code>.  </li>
+<li>Create the partition for the Windows installation: <code>create partition primary size=120000</code>.  </li>
+</ul>
+<blockquote>
+<p>If you're chops are strong, you can size the your partitions exactly to match the target USB stick size. The cloning process is lengthy and I hate waiting again if I screw it up, so I chose to keep the partitions a little smaller. I'm using a 128GB USB stick, but there's never the "full" amount available, so I sized the partition to 120GB, or 120000MB.  </p>
+<p>I also tried using a 64GB partition so I could put a Linux distro on the USB stick. Because it's a USB stick and has to be an MBR, I did not successfully add a Linux distro to the stick. Point is, it doesn't pay to save space; just make the main Windows partition the full size of your USB stick. It's also worth noting that you won't be able to change the partition scheme after you've cloned it to the USB stick in later steps.  </p>
+</blockquote>
+<ul>
+<li>Format the main partition: <code>format fs=ntfs label=Windows quick</code>.  </li>
+<li>Assign the partition a drive letter: <code>assign</code>.  </li>
+<li>You should now have two partitions with drive letters assigned.</li>
+</ul>
+<h3>Write the Windows image to the USB hard drive</h3>
+<ul>
+<li>Download your chosen version of Windows to the Windows machine you'll be working from.  </li>
+<li>Download <a href="https://www.autoitscript.com/site/autoit-tools/gimagex/">gimagex</a>. There are also official Windows command line tools, but this one is a GUI.  </li>
+<li>Double-click the ISO to mount it. Windows will assign a drive letter to it.  </li>
+<li>Open gimagex and select the <code>Apply</code> tab.</li>
+<li>In the Source field, select the mounted ISO and navigate to <code>sources\install.wim</code>.  </li>
+<li>In the Destination field, select the Windows partition on the USB hard drive.  </li>
+<li>Press the Select button directly across from the Image field to select your desired image.  </li>
+</ul>
+<blockquote>
+<p>Depending on your installation medium, you may have multiple versions of Windows you can install: Home, Professional, Enterprise,  or EDU in 32 or 64-bit flavors. Make sure you choose a 64-bit version for your Mac.  </p>
+</blockquote>
+<ul>
+<li>Press the Apply button.</li>
+</ul>
+<blockquote>
+<p>Depending on your machine, the apply process may take 15 minutes to a couple hours. Mine typically took about 20-30 mins.  </p>
+</blockquote>
+<ul>
+<li>While you're waiting for the apply process to complete, download the Boot Camp Windows Support software by opening Boot Camp Assistant on your Mac and selecting <code>Download Windows Support Software</code> from the Action menu.  </li>
+</ul>
+<blockquote>
+<p>You can copy the support software to a separate USB stick (not the one you're using for Boot Camp) or you can copy the software over to the Windows machine and place it in your <code>Public Downloads</code> folder after the apply process is complete. If you're reading this tutorial, you're probably savvy enough to figure out how to do this.</p>
+</blockquote>
+<h3>Make the USB hard drive bootable</h3>
+<ul>
+<li>Once the image has been applied to the USB hard drive, launch <code>Command Prompt (Admin)</code>.  </li>
+<li>Type <code>X:</code> where X is the drive where the Windows image was just applied.  </li>
+<li>Type <code>cd Windows\system32</code>.  </li>
+<li>Type <code>bcdboot.exe X:\Windows /s Y: /f ALL</code> where:  <ul>
+<li>X is the drive letter for the Windows partition on the USB hard drive and;  </li>
+<li>Y: is the drive letter for the EFI partition on the USB hard drive.  </li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>I had some issues with bcdboot making the EFI folders on the Windows partition instead of the EFI partition. Once bcdboot has done its thing, you can copy the EFI folder from the Windows partition to the EFI partition. You may not be able to delete the EFI folder from the Windows partition because of the permissions assigned to it. I haven't had any issues with it remaining there.</p>
+</blockquote>
+<p>At this point, you have an external USB hard drive from which you could run Windows. I recommend you test it to make sure it works up to this point by doing the following:  </p>
+<ul>
+<li>Copy the Windows Support Software into the Public Downloads folder (or anywhere else it's accessible by all users) on the Windows partition of the USB hard drive.  </li>
+<li>Eject the drive from your Windows machine and plug it in to your Mac.  </li>
+<li>Restart your Mac while holding the Option key.  Release it once you see <code>Macintosh HD</code> and <code>EFI Boot</code>.</li>
+<li>Select <code>EFI Boot</code>.  </li>
+<li>Allow Windows to setup. When it restarts, make sure you hold the Option key so you can select <code>EFI Boot</code>.  </li>
+<li>Once Windows finishes its initial setup, install the Windows Support Software (optional).  </li>
+<li>Restart to make sure everything is working.  </li>
+</ul>
+<h3>Clone the USB hard drive contents to the USB stick using dd</h3>
+<ul>
+<li>Restart your Mac into OS X/macOS.  </li>
+<li>Insert the USB stick. Both the USB hard drive and stick should be plugged in to your Mac.  </li>
+<li>Open Terminal. Type <code>diskutil list</code>.  </li>
+<li>Make note of the disk numbers for the USB hard drive and the USB stick. I will refer to the hard drive as disk2 and the stick as disk3.  </li>
+<li>Unmount both disks by typing: <code>sudo diskutil unmountDisk /dev/disk2</code> and <code>sudo diskutil unmountDisk /dev/disk3</code>.</li>
+<li>Begin the cloning process by typing: <code>sudo dd if=/dev/rdisk2 of=/dev/rdisk3 bs=1m count=121000</code>.  </li>
+</ul>
+<blockquote>
+<p><strong>Explanation</strong>: dd typically uses 512-byte blocks. Using <code>bs=1m</code> changes it to one megabyte. <code>count=</code> tells dd how many blocks to write. For my 128GB drive, I made a 200MB EFI partition and a 120000MB Windows partition, so I've told dd to write 121,000 blocks. This ensures it captures both the EFI and Windows partitions, plus some extra for the space taken up by the partition tables and offsets. Adjust as your needs dictate.  </p>
+<p>This can take a significant amount of time, depending on how many blocks you are writing. It took about 2 hours when I was experimenting with the 64GB partition; for the 120GB, I just set it and went to the beach.  </p>
+</blockquote>
+<p>Once dd has completed, eject the USB hard drive and restart your Mac, holding the Option key and selecting <code>EFI Boot</code>.</p>
+<h3>Conclusion</h3>
+<p>The USB 3.0 stick isn't the fastest way to run Windows on your Mac. If you open up Performance Monitor, you'll see your main Windows partition maxed out at 100% rather frequently. But if you're strapped for space on your Mac, this will get you by.</p>
+<h3>Helpful Resources</h3>
+<p>Nowadays, no one is a self-made genius. I found these articles particularly helpful when stumbling through this procedure:  </p>
+<ul>
+<li><a href="http://lifehacker.com/how-to-run-a-portable-version-of-windows-from-a-usb-dri-1565509124">How to Run a Portable Version of Windows from a USB Drive</a></li>
+<li><a href="http://www.cultofmac.com/311348/visiontek-usb-pocket-ssd-review/">Put an SSD in your pocket and you’ll sail through Boot Camp</a></li>
+<li><a href="http://www.howtogeek.com/196817/how-to-create-a-windows-to-go-usb-drive-without-the-enterprise-edition/">How to Create a Windows To Go USB Drive Without the Enterprise Edition</a>  </li>
+</ul>
+		</div> <!--/#entry-content-->
+    		<span class="tag-links"><strong>Tagged</strong>
+ <a href="/tag/macos.html" rel="tag">macos</a>,  <a href="/tag/tutorial.html" rel="tag">tutorial</a>,  <a href="/tag/windows.html" rel="tag">windows</a>    		</span>
+	</div> <!--/#main-->
+</div>  <!--/#post--><div class="navigation">
+</div>
+		</div>
+		
+		<div id="footer">
+			<p>Powered by <a href="http://getpelican.com">Pelican</a>, theme by <a href="http://bunnyman.info">tBunnyMan</a>.</p>
+		</div><!-- /#footer -->
+	</div><!-- /#container -->
+	<div style="display:none"></div>
+</body>
+</html>
